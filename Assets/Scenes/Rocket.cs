@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Rocket : MonoBehaviour
 {
@@ -10,6 +8,10 @@ public class Rocket : MonoBehaviour
     AudioSource audioSource;
     [SerializeField] float rcsThurst = 100f; //with serialize you can adjust value in the inspector
     [SerializeField] float mainThurst = 10; //with serialize you can adjust value in the inspector
+
+    enum State { Alive, Dying, Transcending }
+
+    State state = State.Alive;
 
     // Start is called before the first frame update
     void Start()
@@ -31,15 +33,20 @@ public class Rocket : MonoBehaviour
         {
             case "Friendly":
                 //do nothing
-                print("OK");
                 break;
-            case "Fuel":
-                print("FUEL");
+            case "Finish":
+                state = State.Transcending;
+                Invoke("LoadNextScene", 1f);
                 break;
             default:
-                print("DEAD");
+                SceneManager.LoadScene(0);
                 break;
         }
+    }
+
+    private void LoadNextScene()
+    {
+        SceneManager.LoadScene(1);
     }
 
     private void Thrust()
@@ -72,5 +79,7 @@ public class Rocket : MonoBehaviour
         rigidBody.freezeRotation = false; // take resume control of rotation
 
     }
+
+
 
 }
