@@ -21,9 +21,7 @@ public class Rocket : MonoBehaviour
     [SerializeField] ParticleSystem deathParticles;
 
     bool collisionDisabled = false;
-
     enum State { Alive, Dying, Transcending }
-
     State state = State.Alive;
 
     // Start is called before the first frame update
@@ -121,9 +119,14 @@ public class Rocket : MonoBehaviour
         }
         else
         {
-            audioSource.Stop();
-            mainEngineParticles.Stop();
+            StopApplyingThrust();
         }
+    }
+
+    private void StopApplyingThrust()
+    {
+        audioSource.Stop();
+        mainEngineParticles.Stop();
     }
 
     private void ApplyThrust()
@@ -138,7 +141,8 @@ public class Rocket : MonoBehaviour
 
     private void RespondToRotateInput()
     {
-        rigidBody.freezeRotation = true; // take manuel control of rotation
+        rigidBody.angularVelocity = Vector3.zero; //remove rotation due the physics
+
         float rotationThisFrame = rcsThurst * Time.deltaTime;
 
         if (Input.GetKey(KeyCode.A))
@@ -149,8 +153,6 @@ public class Rocket : MonoBehaviour
         {
             transform.Rotate(-Vector3.forward * rotationThisFrame);
         }
-
-        rigidBody.freezeRotation = false; // take resume control of rotation
 
     }
 
